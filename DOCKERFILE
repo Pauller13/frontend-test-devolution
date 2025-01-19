@@ -1,0 +1,36 @@
+# Étape 1 : Utiliser l'image Node.js pour construire l'application Angular
+FROM node:alpine as build
+
+# Définir le répertoire de travail
+WORKDIR /app
+
+# Copier les fichiers package.json et package-lock.json pour installer les dépendances
+COPY package.json package-lock.json ./
+
+# Installer Angular CLI et les dépendances du projet
+RUN npm install -g @angular/cli@latest --legacy-peer-deps
+RUN npm install --legacy-peer-deps
+
+# Copier tout le projet Angular dans le conteneur
+COPY . .
+
+# Construire l'application Angular en mode production
+RUN ng build
+
+# Étape 2 : Utiliser Nginx pour servir l'application Angular
+FROM nginx:alpine
+
+# Supprimer la configuration Nginx par défaut
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copier la configuration Nginx personnalisée dans le conteneur
+COPY nginx/nginx.conf /etc/nginx/conf.d
+
+# Copier l'application Angular construite depuis l'étape précédente
+COPY --from=build /app/dist/skeleton /usr/share/nginx/html
+
+# Exposer les ports pour le trafic HTTP
+EXPOSE 80
+
+# Lancer Nginx en mode premier plan
+CMD ["nginx", "-g", "daemon off;"]
