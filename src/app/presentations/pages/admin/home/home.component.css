@@ -1,0 +1,20 @@
+.custom-card {
+  flex: 1;
+  margin: 0 10px;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+  background-color: #fff;
+}
+
+.custom-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-value {
+  color: #4CAF50;
+  font-weight: bold;
+  font-size: 2rem;
+  text-align: center;
+}
